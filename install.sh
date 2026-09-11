@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # 把 job-screening 装到本机的 Codex / Claude Code。
-# 用法：bash install.sh        （自动检测装到哪个）
-#       bash install.sh codex  （只装 Codex）
-#       bash install.sh claude （只装 Claude Code）
+# 用法：bash install.sh            （自动检测装到哪个）
+#       bash install.sh codex      （只装 Codex）
+#       bash install.sh claude     （只装 Claude Code）
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,12 +24,22 @@ if [ ${#TARGETS[@]} -eq 0 ]; then
 fi
 
 for DST in "${TARGETS[@]}"; do
+  # 目标已存在且不是本仓库装出来的 → 先整目录备份，绝不覆盖别人的东西。
+  # （典型情况：你本来就有一个同名的私人版 skill，里面存着简历和档案。）
+  if [ -d "$DST" ] && [ ! -f "$DST/.job-screening-installed" ]; then
+    BAK="$DST.bak-$(date +%Y%m%d-%H%M%S)"
+    cp -R "$DST" "$BAK"
+    echo "⚠️  $DST 已存在且不是本仓库装的，已整份备份到："
+    echo "    $BAK"
+  fi
+
   mkdir -p "$DST"
-  # profile/ 是本机的个人档案，绝不覆盖
-  rsync -a --delete \
+  # 不用 --delete：目标里多出来的文件（你自己的档案、笔记）一律保留
+  rsync -a \
     --exclude '.git' --exclude 'profile' --exclude 'install.sh' --exclude '.DS_Store' \
     "$SRC"/ "$DST"/
   mkdir -p "$DST/profile"
+  touch "$DST/.job-screening-installed"
   echo "✅ 已安装到 $DST"
 done
 

@@ -42,7 +42,9 @@ bash ~/job-screening-skill/install.sh
 
 装好后直接说「帮我筛一下秋招岗位」就会触发，也可以显式说「用 job-screening」。
 
-> 重装/更新时 `install.sh` 不会动 `profile/` —— 你的档案和简历留在原地。
+> **install.sh 不会删东西**：`profile/` 不动，目标目录里多出来的文件也一律保留。
+> 如果那个位置本来就有一个同名的、不是本仓库装的 skill（比如你自己写的私人版），
+> 它会先把整个目录备份成 `job-screening.bak-<时间戳>` 再装。
 
 ## 怎么用
 
