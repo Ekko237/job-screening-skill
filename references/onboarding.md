@@ -1,6 +1,7 @@
 # 首次使用：建档
 
-`~/.claude/skills/job-screening/profile/candidate-profile.md` 不存在时走这个流程。
+本 skill 目录下的 `profile/candidate-profile.md` 不存在时走这个流程
+（Codex：`~/.codex/skills/job-screening/`；Claude Code：`~/.claude/skills/job-screening/`）。
 **一次做完，之后每次筛岗都复用。** 全程大约 10 分钟。
 
 目标是产出三样东西：
@@ -17,12 +18,23 @@
 > 先给我你的简历（PDF、Word、图片都行，直接拖进来就可以）。
 > 有几个版本就都给我——投递用的那一版最重要。
 
-读的时候：
-- **PDF / 图片** → 带排版和照片的用 Read 直接看图，比转文本准
-- **Word / Excel** → 走 `/markitdown` 转 Markdown
-- **多个版本** → 每一份都读，并**当场问清楚哪一份是实际投出去的**
-  （很多人有一页投递版 + 多页全量版 + 素材母版，用途完全不同；
-  后面的「证据可见性闸」全靠这个区分）
+### 怎么读简历
+
+**先试着直接读**——能读图的 agent 直接看 PDF / 截图最准（排版、分栏、哪些内容在第一页，
+这些都影响后面的判断）。读不了就按下面转文本：
+
+```bash
+pdftotext -layout 简历.pdf -          # PDF，-layout 保留分栏
+markitdown 简历.docx                   # Word / Excel，没装就 pip install "markitdown[all]"
+textutil -convert txt -stdout 简历.doc # macOS 自带，应急用
+```
+
+图片格式的简历（png/jpg）如果 agent 读不了图，**直接说，让她把文字复制过来**，
+不要拿 EXIF 之类的东西硬猜。
+
+**多个版本要全读**，并**当场问清楚哪一份是实际投出去的**
+（很多人有一页投递版 + 多页全量版 + 素材母版，用途完全不同；
+后面的「证据可见性闸」全靠这个区分）。
 
 读完**先复述一遍你从简历里读到的东西**再往下问——让他有机会当场纠正你的误读。
 复述要具体：几段经历、每段做了什么、最硬的数字是哪几个。不要说「看起来经验丰富」。
@@ -79,7 +91,7 @@
 ## 第 4 步：写档案
 
 ```bash
-mkdir -p ~/.claude/skills/job-screening/profile
+mkdir -p <skill 目录>/profile    # Codex: ~/.codex/skills/job-screening/profile
 ```
 
 用 `profile-template.md` 当骨架，逐栏填。规则：
@@ -110,6 +122,5 @@ mkdir -p ~/.claude/skills/job-screening/profile
 
 ## 隐私
 
-档案和简历都留在**本机**（`~/.claude/skills/job-screening/profile/`），
-这个目录已经在 `.gitignore` 里，不会被提交或上传。
+档案和简历都留在**本机**的 `profile/` 目录，它已经在 `.gitignore` 里，不会被提交或上传。
 **不要把简历内容、姓名、联系方式写进这个仓库里的任何文件。**

@@ -1,7 +1,7 @@
 # job-screening · 校招选岗 Skill
 
 校招每家公司通常只能投 1–3 个岗，但岗位列表常有几十上百个。
-这是一个给 [Claude Code](https://claude.com/claude-code) 用的 Skill：
+这是一个给 **Codex / Claude Code** 用的 Skill：
 **把某家公司的岗位列表丢给它，它告诉你投哪几个、哪个成功率最高、其余的为什么不投。**
 
 不替你选公司，也不替你写简历。就干"在一家公司里选岗"这一件事。
@@ -24,15 +24,25 @@
 
 ## 安装
 
+支持 **Codex** 和 **Claude Code**，两者的 skill 格式一样。
+
 ```bash
-git clone <本仓库地址> ~/.claude/skills/job-screening
+git clone <本仓库地址> ~/job-screening-skill
+bash ~/job-screening-skill/install.sh
 ```
 
-或者下载后放到 `~/.claude/skills/job-screening/`，确保目录里有 `SKILL.md`。
+脚本会自动检测本机装的是哪个，复制到对应位置（两个都装就都放一份）：
 
-装好后在 Claude Code 里直接说话就会触发，也可以用 `/job-screening` 显式调用。
+| 用的是 | 装到 |
+|---|---|
+| Codex | `~/.codex/skills/job-screening/` |
+| Claude Code | `~/.claude/skills/job-screening/` |
 
----
+也可以手动放——把仓库内容（除了 `install.sh`）复制进上面的目录，确保里面有 `SKILL.md`。
+
+装好后直接说「帮我筛一下秋招岗位」就会触发，也可以显式说「用 job-screening」。
+
+> 重装/更新时 `install.sh` 不会动 `profile/` —— 你的档案和简历留在原地。
 
 ## 怎么用
 
@@ -108,6 +118,7 @@ git clone <本仓库地址> ~/.claude/skills/job-screening
 ```
 job-screening/
 ├── SKILL.md                      主流程：输入分流、硬淘汰、四层排序、输出格式
+├── install.sh                    一键装到 Codex 或 Claude Code
 ├── references/
 │   ├── onboarding.md             首次使用：收简历、访谈、建档
 │   ├── opportunity-scan.md       从简历反推还能投哪些方向
