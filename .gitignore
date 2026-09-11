@@ -1,0 +1,12 @@
+# 个人数据一律不进版本库
+profile/
+resumes/
+*.pdf
+*.docx
+*.doc
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+*.webp
+.DS_Store
