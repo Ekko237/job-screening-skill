@@ -44,7 +44,9 @@ bash ~/job-screening-skill/install.sh
 
 > **install.sh 不会删东西**：`profile/` 不动，目标目录里多出来的文件也一律保留。
 > 如果那个位置本来就有一个同名的、不是本仓库装的 skill（比如你自己写的私人版），
-> 它会先把整个目录备份成 `job-screening.bak-<时间戳>` 再装。
+> 脚本会先把整个目录备份成 `job-screening.bak-<时间戳>`，然后停下来，不覆盖。
+> 确认要用本仓库替换它时，再跑 `bash install.sh --force`（`profile/` 仍然不会被改写）。
+> `--force` 可以写在目标前面或后面，例如 `bash install.sh --force codex`。
 
 ## 怎么用
 

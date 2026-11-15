@@ -1,7 +1,8 @@
 # 首次使用：建档
 
-本 skill 目录下的 `profile/candidate-profile.md` 不存在时走这个流程
+本 skill 自己的 profile 子目录里还没有候选人档案时走这个流程
 （Codex：`~/.codex/skills/job-screening/`；Claude Code：`~/.claude/skills/job-screening/`）。
+档案只写在这一份 skill 自己的目录里。
 **一次做完，之后每次筛岗都复用。** 全程大约 10 分钟。
 
 目标是产出三样东西：
@@ -25,9 +26,13 @@
 
 ```bash
 pdftotext -layout 简历.pdf -          # PDF，-layout 保留分栏
-markitdown 简历.docx                   # Word / Excel，没装就 pip install "markitdown[all]"
-textutil -convert txt -stdout 简历.doc # macOS 自带，应急用
+markitdown 简历.docx                   # 仅当本机已经装了 markitdown
+textutil -convert txt -stdout 简历.doc # macOS 自带，Word / 旧版 .doc 应急用
 ```
+
+`markitdown` 没装就不要自己装。让用户把文字粘贴过来，或另存成 PDF 后用 `pdftotext`。
+只有用户明确同意安装之后，才建议在虚拟环境里装钉死版本、且只带 Word 和 xlsx 所需 extras 的包：
+`python3 -m venv .venv && . .venv/bin/activate && pip install 'markitdown[docx,xlsx]==0.1.9'`。
 
 图片格式的简历（png/jpg）如果 agent 读不了图，**直接说，让她把文字复制过来**，
 不要拿 EXIF 之类的东西硬猜。
@@ -88,13 +93,18 @@ textutil -convert txt -stdout 简历.doc # macOS 自带，应急用
 
 ---
 
-## 第 4 步：写档案
+## 第 4 步：先征得同意，再写档案
 
-```bash
-mkdir -p <skill 目录>/profile    # Codex: ~/.codex/skills/job-screening/profile
-```
+写文件之前，先告诉用户这三件事，并等到他明确同意：
 
-用 `profile-template.md` 当骨架，逐栏填。规则：
+- **存什么**：他亲口确认过的硬约束、简历的形状、各份简历在本机的路径、已知不可见证据。简历原文留在他原来的文件里，档案只记路径。不上传，也不写进这个仓库。
+- **存在哪**：只在本 skill 自己的 profile 子目录。Codex 是 `~/.codex/skills/job-screening/profile/`，Claude Code 是 `~/.claude/skills/job-screening/profile/`。
+- **为什么**：之后每次筛岗复用这份他确认过的标准，不用每次重问。
+
+用户同意之后，再在那个 profile 子目录里建立档案，文件名用 candidate-profile.md，骨架用 `profile-template.md`，逐栏填。
+没同意就停：不建目录、不写文件，也不开始筛岗。
+
+规则：
 
 - **只写他亲口确认的**。你从简历推断出来的，要么先确认，要么标「（推断，未确认）」。
 - **「简历的形状」这一栏是筛选时的主力**，写细一点：

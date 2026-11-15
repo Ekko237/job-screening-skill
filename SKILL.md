@@ -1,5 +1,6 @@
 ---
 name: job-screening
+version: 1.0.1
 description: 帮求职者在一家公司的招聘岗位列表里选出该投的 1–3 个岗位，说清楚哪个最适合、成功率最高，以及其余的为什么不投。首次使用会先收简历、做一轮求职访谈建档，并基于简历反推还能投哪些职位方向。用户会用截图、粘贴文本、PDF/Excel 岗位表、招聘链接的形式把岗位发进来。当用户说「这家能投哪个」「帮我看看投什么岗」「筛一下这些职位」「这个 JD 我合适吗」「我适合什么岗位」「秋招投递」，或直接丢来一张招聘页面截图时使用。只做单家公司内的选岗，不负责选公司。
 metadata:
   short-description: 校招选岗：一家公司投哪几个、哪个成功率最高
@@ -23,11 +24,13 @@ metadata:
 | Codex | `~/.codex/skills/job-screening/` |
 | Claude Code | `~/.claude/skills/job-screening/` |
 
+只检查**当前这份 skill 自己的** profile 子目录，确认里面有没有候选人档案（文件名 candidate-profile.md）。`SKILL_DIR` 就是这份 SKILL.md 所在的目录。不要列出技能安装根目录，也不要去看别的 skill。
+
 ```bash
-ls ~/.codex/skills/job-screening/profile/ ~/.claude/skills/job-screening/profile/ 2>/dev/null
+test -f "${SKILL_DIR}/profile/candidate-profile.md"
 ```
 
-- **没有 `candidate-profile.md`** → 这是首次使用，读 `references/onboarding.md`，走完建档流程再筛岗。
+- **没有候选人档案** → 这是首次使用，读 `references/onboarding.md`，走完建档流程再筛岗。
   **不要跳过建档直接筛**——没有档案就没有淘汰标准，筛出来的是通用建议，没有价值。
 - **有档案** → 每次筛选前完整读一遍，不要凭记忆。
 
@@ -65,8 +68,20 @@ ls ~/.codex/skills/job-screening/profile/ ~/.claude/skills/job-screening/profile
 | 截图（最常见） | **能直接读图就直接读图**。逐条读出岗位名、部门/业务线、地点、学历专业要求、投递上限提示。读不了图就让用户把文字复制过来 |
 | 粘贴的纯文本 | 直接读 |
 | PDF 岗位表 | `pdftotext -layout 文件.pdf -` |
-| Excel / Word 岗位表 | `markitdown 文件.xlsx`（没装就 `pip install markitdown[all]`） |
+| Excel / Word 岗位表 | 优先用已经装好的 `markitdown`；没有就让用户把文字粘贴过来（见下面） |
 | 招聘官网 URL | 有浏览器工具就打开抓。多数招聘站要登录，抓不到就直接说，让用户改发截图 |
+
+**Excel / Word 不要自动装转换器。** 按这个顺序：
+
+1. 本机已经有 `markitdown` 就用它。macOS 上的 Word 也可以用系统自带的 `textutil -convert txt -stdout 文件.docx`。
+2. 都没有，就让用户把文字粘贴过来，或另存成 PDF 后走上面的 `pdftotext`。
+3. 只有用户**明确同意安装**之后，才建议在虚拟环境里装**钉死版本**、且只带 Word 和 xlsx 所需 extras 的包：
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install 'markitdown[docx,xlsx]==0.1.9'
+```
 
 ⚠️ **图片不要走文本转换工具。** 那些工具对图片只提 EXIF 元数据，招聘页截图基本提不出结构化岗位。
 
